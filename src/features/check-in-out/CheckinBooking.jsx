@@ -27,7 +27,7 @@ function CheckinBooking() {
     numNights,
     numGuests,
     hasBreakfast,
-    extrasPrice,
+
     totalPrice,
     cabinPrice,
   } = booking || {};

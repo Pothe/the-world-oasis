@@ -31,7 +31,7 @@ function BookingDetail() {
     "checked-out": "silver",
   };
 
-  const { id: bookingId, status, hasBreakfast } = booking || {};
+  const { id: bookingId, status } = booking || {};
   if (isLoading) return <Spinner />;
   return (
     <>
@@ -57,7 +57,7 @@ function BookingDetail() {
             Check in # {bookingId}
           </Button>
         )}
-        {status === "checked-out"  && (
+        {status === "checked-out" && (
           <Button
             variation="primary"
             onClick={() => navigate(`/checkin/${bookingId}`)}

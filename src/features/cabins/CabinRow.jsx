@@ -49,12 +49,12 @@ const Discount = styled.div`
   font-weight: 500;
   color: var(--color-green-700);
 `;
-const ButtonRow = styled.div`
-  display: flex;
-  gap: 1.2rem;
-  flex-wrap: wrap;
-  flex-direction: row;
-`;
+// const ButtonRow = styled.div`
+//   display: flex;
+//   gap: 1.2rem;
+//   flex-wrap: wrap;
+//   flex-direction: row;
+// `;
 
 function CabinRow({ cabin }) {
   const { DeleteCabin, deletePending } = useDeleteCabins();

@@ -1,5 +1,4 @@
 import { createContext, useContext } from "react";
-import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
 const StyledTable = styled.div`

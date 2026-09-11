@@ -5,14 +5,10 @@ import { useUpdateSetting } from "./useUpdateSetting";
 import { useSetttings } from "./useSetttings";
 
 function UpdateSettingsForm() {
-  const {
-    mutate: updateSetting,
-    isPending: isEditing,
-    error: editError,
-  } = useUpdateSetting();
+  const { mutate: updateSetting, isPending: isEditing } = useUpdateSetting();
   const {
     isLoading,
-    error,
+
     settings: {
       minBooklength,
       maxBookinglength,
