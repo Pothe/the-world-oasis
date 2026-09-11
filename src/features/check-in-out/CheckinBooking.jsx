@@ -1,120 +1,104 @@
-import { useEffect, useState } from 'react';
-import { formatCurrency } from 'utils/helpers';
+import { useParams } from "react-router-dom";
+import { useMoveBack } from "../../hooks/useMoveBack";
+import Button from "../../ui/Button";
+import ButtonGroup from "../../ui/ButtonGroup";
+import ButtonText from "../../ui/ButtonText";
+import Heading from "../../ui/Heading";
+import Row from "../../ui/Row";
+import BookingDataBox from "../bookings/BookingDataBox";
+import useBooking from "../bookings/useBooking";
+import Spinner from "../../ui/Spinner";
+import { useEffect, useState } from "react";
+import Checkbox from "../../ui/Checkbox";
+import { formatCurrency } from "../../utils/helpers";
 
-import Spinner from 'ui/Spinner';
-import Row from 'ui/Row';
-import Heading from 'ui/Heading';
-import ButtonGroup from 'ui/ButtonGroup';
-import Button from 'ui/Button';
-import ButtonText from 'ui/ButtonText';
-import Checkbox from 'ui/Checkbox';
-
-import BookingDataBox from 'features/bookings/BookingDataBox';
-
-import { useBooking } from 'features/bookings/useBooking';
-import { useMoveBack } from 'hooks/useMoveBack';
-import { useCheckin } from './useCheckin';
-
-import styled from 'styled-components';
-import { box } from 'styles/styles';
-import { useSettings } from 'features/settings/useSettings';
-
-const Box = styled.div`
-  ${box}
-  padding: 2.4rem 4rem;
-`;
+import { useChecking } from "./useChecking";
+import Box from "../../ui/Box";
+import { useSetttings } from "../settings/useSetttings";
 
 function CheckinBooking() {
-  const [confirmPaid, setConfirmPaid] = useState(false);
-  const [addBreakfast, setAddBreakfast] = useState(false);
+  const { bookingId } = useParams();
+  const [Confirmed, setConfirmed] = useState(false);
+  const [addBreakfast, setaddBreakfast] = useState(false);
 
   const { booking, isLoading } = useBooking();
-  const { mutate: checkin, isLoading: isCheckingIn } = useCheckin();
-  const moveBack = useMoveBack();
-  const { isLoading: isLoadingSettings, settings } = useSettings();
-
-  // Can't use as initial state, because booking will still be loading
-  useEffect(() => setConfirmPaid(booking?.isPaid ?? false), [booking]);
-
-  if (isLoading || isLoadingSettings) return <Spinner />;
 
   const {
-    id: bookingId,
-    guests,
-    totalPrice,
+    numNights,
     numGuests,
     hasBreakfast,
-    numNights,
-  } = booking;
+    extrasPrice,
+    totalPrice,
+    cabinPrice,
+  } = booking || {};
 
-  const optionalBreakfastPrice =
-    numNights * settings.breakfastPrice * numGuests;
-
+  const { checkin, checkingLoading } = useChecking();
+  useEffect(() => setConfirmed(booking?.isPaid ?? false), [booking]);
+  const moveBack = useMoveBack();
   function handleCheckin() {
-    if (!confirmPaid) return;
-
-    if (addBreakfast)
+    if (!Confirmed) return;
+    if (addBreakfast) {
       checkin({
         bookingId,
-        breakfast: {
+        breakFast: {
           hasBreakfast: true,
-          extrasPrice: optionalBreakfastPrice,
-          totalPrice: totalPrice + optionalBreakfastPrice,
+          extrasPrice: optionalBreakPrice,
+          totalPrice: totalPrice + optionalBreakPrice,
         },
       });
-    else checkin({ bookingId, breakfast: {} });
+    } else {
+      checkin({ bookingId, breakFast: {} });
+    }
   }
+  const { settings } = useSetttings();
 
-  // We return a fragment so that these elements fit into the page's layout
+  const optionalBreakPrice = settings?.breakfastPrice * numNights * numGuests;
+
+  if (isLoading || checkingLoading) return <Spinner />;
   return (
     <>
-      <Row type='horizontal'>
-        <Heading type='h1'>Check in booking #{bookingId}</Heading>
+      <Row type="horizontal">
+        <Heading type="h1">Check in booking #{bookingId}</Heading>
         <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
       </Row>
 
       <BookingDataBox booking={booking} />
-
-      {/* LATER */}
       {!hasBreakfast && (
         <Box>
           <Checkbox
             checked={addBreakfast}
             onChange={() => {
-              setAddBreakfast((add) => !add);
-              setConfirmPaid(false);
+              setaddBreakfast((add) => !add);
+              setConfirmed(false);
             }}
-            id='breakfast'
           >
-            Want to add breakfast for {formatCurrency(optionalBreakfastPrice)}?
+            add breadfast for {formatCurrency(optionalBreakPrice)}
           </Checkbox>
         </Box>
       )}
-
       <Box>
         <Checkbox
-          checked={confirmPaid}
-          onChange={() => setConfirmPaid((confirm) => !confirm)}
-          // If the guest has already paid online, we can't even undo this
-          disabled={isCheckingIn || confirmPaid}
-          id='confirm'
+          onChange={() => setConfirmed((confirm) => !confirm)}
+          disabled={Confirmed || checkingLoading}
+          checked={Confirmed}
+          id={`${bookingId}`}
         >
-          I confirm that {guests.fullName} has paid the total amount of{' '}
-          {!addBreakfast
-            ? formatCurrency(totalPrice)
-            : `${formatCurrency(
-                totalPrice + optionalBreakfastPrice
-              )} (${formatCurrency(totalPrice)} + ${formatCurrency(
-                optionalBreakfastPrice
-              )} for breakfast)`}
+          i confirm that i will pay when i arrive || total Price{" "}
+          {formatCurrency(
+            cabinPrice * numNights * numGuests + optionalBreakPrice,
+          )}{" "}
+          (
+          {`${formatCurrency(cabinPrice * numNights * numGuests)} total Cabin Price  + ${formatCurrency(optionalBreakPrice)} total breakFast`}
+          )
         </Checkbox>
       </Box>
 
       <ButtonGroup>
-        <Button onClick={handleCheckin} disabled={isCheckingIn || !confirmPaid}>
+        <Button onClick={handleCheckin} disabled={!Confirmed}>
           Check in booking #{bookingId}
         </Button>
-        <Button variation='secondary' onClick={moveBack}>
+
+        <Button variation="secondary" onClick={moveBack}>
           Back
         </Button>
       </ButtonGroup>

@@ -1,9 +1,44 @@
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
+import { PAGE_SIZE } from "../utils/cooparator";
+export async function getBookings({ filter, sortBy, page }) {
+  // collect all bookings from supabase and return them to the function, if filter is not null then it will return data with filter applied, otherwise it will return all data
+  let query = supabase
+    .from("Bookings")
+    .select(
+      "id, startDate, endDate, numNights, numGuests, totalPrice, status, cabins(name), guests(fullName, email)",
+      { count: "exact" },
+    );
 
+  // const {data, error} = await supabase.from('Bookings').select('*,cabins(name),guests(fullName,email)'),status
+  // to check if filter not equal to null then data will return to function with filter applied, otherwise it will return all data
+
+  if (filter)
+    query = query[filter.method || "eq"](filter.filterField, filter.value);
+  // query = query.eq(filter.filterField, filter.value);
+
+  // 2) sortBy
+  if (sortBy)
+    query = query.order(sortBy.field, {
+      ascending: sortBy.direction === "asc",
+    });
+
+  if (page) {
+    const from = (page - 1) * (PAGE_SIZE - 1);
+    const to = from + (PAGE_SIZE - 1);
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
+  // to check if it has error then it will display error message, otherwise it will return data to function
+  if (error) {
+    throw new Error("Bookings could not get loaded");
+  }
+  return { data, count };
+}
 export async function getBooking(id) {
   const { data, error } = await supabase
-    .from("bookings")
+    .from("Bookings")
     .select("*, cabins(*), guests(*)")
     .eq("id", id)
     .single();
@@ -55,7 +90,7 @@ export async function getStaysTodayActivity() {
     .from("bookings")
     .select("*, guests(fullName, nationality, countryFlag)")
     .or(
-      `and(status.eq.unconfirmed,startDate.eq.${getToday()}),and(status.eq.checked-in,endDate.eq.${getToday()})`
+      `and(status.eq.unconfirmed,startDate.eq.${getToday()}),and(status.eq.checked-in,endDate.eq.${getToday()})`,
     )
     .order("created_at");
 
@@ -72,7 +107,7 @@ export async function getStaysTodayActivity() {
 
 export async function updateBooking(id, obj) {
   const { data, error } = await supabase
-    .from("bookings")
+    .from("Bookings")
     .update(obj)
     .eq("id", id)
     .select()
@@ -87,7 +122,7 @@ export async function updateBooking(id, obj) {
 
 export async function deleteBooking(id) {
   // REMEMBER RLS POLICIES
-  const { data, error } = await supabase.from("bookings").delete().eq("id", id);
+  const { data, error } = await supabase.from("Bookings").delete().eq("id", id);
 
   if (error) {
     console.error(error);
