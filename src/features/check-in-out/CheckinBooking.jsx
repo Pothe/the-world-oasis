@@ -23,14 +23,9 @@ function CheckinBooking() {
 
   const { booking, isLoading } = useBooking();
 
-  const {
-    numNights,
-    numGuests,
-    hasBreakfast,
-
-    totalPrice,
-    cabinPrice,
-  } = booking || {};
+  const { numNights, numGuests, hasBreakfast,
+     totalPrice, cabinPrice } =
+    booking || {};
 
   const { checkin, checkingLoading } = useChecking();
   useEffect(() => setConfirmed(booking?.isPaid ?? false), [booking]);
