@@ -23,8 +23,7 @@ function CheckinBooking() {
 
   const { booking, isLoading } = useBooking();
 
-  const { numNights, numGuests, hasBreakfast,
-     totalPrice, cabinPrice } =
+  const { numNights, numGuests, hasBreakfast, totalPrice, cabinPrice } =
     booking || {};
 
   const { checkin, checkingLoading } = useChecking();

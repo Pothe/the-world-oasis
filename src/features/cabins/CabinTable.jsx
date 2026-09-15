@@ -1,11 +1,10 @@
 import styled from "styled-components";
 
-import { useQuery } from "@tanstack/react-query";
-import { getCabins } from "../../services/apiCabins";
-import Spinner from "../../ui/Spinner";
-import CabinRow from "./CabinRow";
 import { useSearchParams } from "react-router-dom";
 import Pagination from "../../ui/Pagination";
+import Spinner from "../../ui/Spinner";
+import CabinRow from "./CabinRow";
+import useCabins from "./useCabins";
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -35,11 +34,7 @@ function CabinTable() {
   const [searchParams] = useSearchParams();
   const filterField = searchParams.get("discount") || "all";
   let filterValues;
-  const { isLoading, data: Cabins } = useQuery({
-    queryKey: ["cabins"],
-    queryFn: getCabins,
-  });
-
+  const { isLoading, Cabins } = useCabins();
   if (filterField === "all") filterValues = Cabins;
   if (filterField === "with-discount")
     filterValues = Cabins?.filter((cabin) => cabin.discount > 0);

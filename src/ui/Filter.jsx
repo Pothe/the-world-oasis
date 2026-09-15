@@ -58,7 +58,7 @@ export function Filter({ filterField, options }) {
           disabled={currentFilterValue === option.value}
           key={option.value}
         >
-          {option.value}
+          {option.label}
         </FilterButton>
       ))}
     </StyledFilter>

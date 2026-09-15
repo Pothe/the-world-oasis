@@ -1,9 +1,13 @@
 import { IoIosLogOut } from "react-icons/io";
+import { IoIosMoon } from "react-icons/io";
+import { WiDayHaze } from "react-icons/wi";
 import styled from "styled-components";
-import Button from "./Button";
+import { IoIosNotificationsOutline } from "react-icons/io";
 import useLogout from "../features/authentication/useLogout";
 import Spinner from "./Spinner";
 import UserAvatar from "../features/authentication/UserAvatar";
+import ButtonText from "./ButtonText";
+import { useDarkMode } from "../context/DarkModeProvider";
 
 const StyledHeader = styled.header`
   background-color: var(--color-grey-0);
@@ -17,13 +21,20 @@ const StyledHeader = styled.header`
 
 function Header() {
   const { logout, isPending } = useLogout();
+  const { isDarkMode, ToggleMode } = useDarkMode();
   if (isPending) return <Spinner />;
   return (
     <StyledHeader>
-      <UserAvatar  />
-      <Button onClick={logout}>
+      <UserAvatar />
+      <ButtonText>
+        <IoIosNotificationsOutline />
+      </ButtonText>
+      <ButtonText onClick={ToggleMode}>
+        {isDarkMode ? <IoIosMoon /> : <WiDayHaze />}
+      </ButtonText>
+      <ButtonText onClick={logout}>
         <IoIosLogOut />
-      </Button>
+      </ButtonText>
     </StyledHeader>
   );
 }
