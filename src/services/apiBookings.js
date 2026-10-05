@@ -1,6 +1,6 @@
+import { PAGE_SIZE } from "../utils/cooparator";
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
-import { PAGE_SIZE } from "../utils/cooparator";
 export async function getBookings({ filter, sortBy, page }) {
   // collect all bookings from supabase and return them to the function, if filter is not null then it will return data with filter applied, otherwise it will return all data
   let query = supabase
@@ -70,9 +70,9 @@ export async function getBookingsAfterDate(date) {
 // Returns all STAYS that are were created after the given date
 export async function getStaysAfterDate(date) {
   const { data, error } = await supabase
-    .from("bookings")
-    // .select('*')
+    .from("Bookings")
     .select("*, guests(fullName)")
+    // .or(`and(status.eq.unconfirmed,startDate.eq.${getToday()})`)
     .gte("startDate", date)
     .lte("startDate", getToday());
 
