@@ -21,6 +21,7 @@ const StyledSalesChart = styled(DashboardBox)`
   & .recharts-cartesian-grid-vertical line {
     stroke: var(--color-grey-300);
   }
+  //
 `;
 
 // const FakeData = [
@@ -61,6 +62,7 @@ function SalesChart({ bookings, numDays }) {
     end: new Date(),
   });
 
+  console.log(alldate);
   const data = alldate.map((date) => {
     return {
       label: format(date, "MMM dd"),
@@ -72,7 +74,6 @@ function SalesChart({ bookings, numDays }) {
         .reduce((acc, cur) => acc + cur.extrasPrice, 0),
     };
   });
-
   const colors = isDarkMode
     ? {
         totalSales: { stroke: "#4f46e5", fill: "#4f46e5" },
@@ -89,24 +90,43 @@ function SalesChart({ bookings, numDays }) {
 
   return (
     <StyledSalesChart>
-      <Heading as="h2">SALES</Heading>
-      <ResponsiveContainer width="100%" height={350}>
-        <AreaChart data={data}>
-          <XAxis dataKey="label" />
-          <YAxis unit="$" />
-          <CartesianGrid />
+      <Heading as="h2">
+        SALES from {format(alldate[0], "MMM dd")} &ndash;{" "}
+        {format(alldate[alldate.length - 1], "MMM dd")}
+      </Heading>
+      <ResponsiveContainer width="100%" height={300}>
+        <AreaChart data={data} width="100%" height={300}>
+          <XAxis
+            dataKey="label"
+            stroke={colors.text}
+            tick={{ fill: colors.text }}
+            tickLine={{ stroke: colors.text }}
+          />
+          <YAxis
+            unit=" $"
+            tick={{ fill: colors.text }}
+            tickLine={{ stroke: colors.text }}
+          />
+
+          <CartesianGrid strokeDasharray="4" />
           <Tooltip />
           <Area
             dataKey="totalSales"
-            type="monotone"
             stroke={colors.totalSales.stroke}
-            fill={colors.totalSales.stroke}
+            fill={colors.totalSales.fill}
+            type="monotone"
+            name="Total Sales"
+            unit=" $"
+            strokeWidth={2}
           />
           <Area
             dataKey="extrasSales"
-            type="monotone"
             stroke={colors.extrasSales.stroke}
-            fill={colors.extrasSales.stroke}
+            fill={colors.extrasSales.fill}
+            strokeWidth={2}
+            type="monotone"
+            name="Extras Sales"
+            unit=" $"
           />
         </AreaChart>
       </ResponsiveContainer>

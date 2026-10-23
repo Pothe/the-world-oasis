@@ -1,5 +1,3 @@
-import styled from "styled-components";
-import Heading from "../../ui/Heading";
 import {
   Cell,
   Legend,
@@ -8,7 +6,9 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { useDarkMode } from "../../context/DarkModeContext";
+import styled from "styled-components";
+import { useDarkMode } from "../context/DarkModeProvider";
+import Heading from "../ui/Heading";
 
 const ChartBox = styled.div`
   /* Box */
@@ -119,7 +119,7 @@ function prepareData(startData, stays) {
 
   function incArrayValue(arr, field) {
     return arr.map((obj) =>
-      obj.duration === field ? { ...obj, value: obj.value + 1 } : obj
+      obj.duration === field ? { ...obj, value: obj.value + 1 } : obj,
     );
   }
 
@@ -143,7 +143,7 @@ function prepareData(startData, stays) {
 
 function DurationChart({ confirmedStays }) {
   const { isDarkMode } = useDarkMode();
-  const startData = isDarkMode ? startDataDark : startDataLight;
+  const startData = isDarkMode ? startDataLight : startDataDark;
   const data = prepareData(startData, confirmedStays);
 
   return (
@@ -151,6 +151,7 @@ function DurationChart({ confirmedStays }) {
       <Heading as="h2">Stay duration summary</Heading>
       <ResponsiveContainer width="100%" height={240}>
         <PieChart>
+          <Tooltip />
           <Pie
             data={data}
             nameKey="duration"
@@ -161,23 +162,22 @@ function DurationChart({ confirmedStays }) {
             cy="50%"
             paddingAngle={3}
           >
-            {data.map((entry) => (
+            {startDataDark.map((entry) => (
               <Cell
                 fill={entry.color}
                 stroke={entry.color}
                 key={entry.duration}
               />
             ))}
+            <Legend
+              verticalAlign="middle"
+              align="right"
+              width="30%"
+              layout="vertical"
+              iconSize={10}
+              iconType="circle"
+            />
           </Pie>
-          <Tooltip />
-          <Legend
-            verticalAlign="middle"
-            align="right"
-            width="30%"
-            layout="vertical"
-            iconSize={15}
-            iconType="circle"
-          />
         </PieChart>
       </ResponsiveContainer>
     </ChartBox>
