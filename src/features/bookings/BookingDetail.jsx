@@ -1,17 +1,18 @@
 import styled from "styled-components";
-import Row from "../../ui/Row";
 import Heading from "../../ui/Heading";
-import useBooking from "./useBooking";
+import Row from "../../ui/Row";
 import Tag from "../../ui/Tag";
+import useBooking from "./useBooking";
 
 import BookingDataBox from "./BookingDataBox";
 
-import { useMoveBack } from "../../hooks/useMoveBack";
 import { HiOutlineArrowSmallLeft } from "react-icons/hi2";
-import ButtonText from "../../ui/ButtonText";
-import ButtonGroup from "../../ui/ButtonGroup";
-import Button from "../../ui/Button";
 import { useNavigate } from "react-router-dom";
+import { useMoveBack } from "../../hooks/useMoveBack";
+import Button from "../../ui/Button";
+import ButtonGroup from "../../ui/ButtonGroup";
+import ButtonText from "../../ui/ButtonText";
+import Empty from "../../ui/Empty";
 import Spinner from "../../ui/Spinner";
 
 const HeadingGroup = styled.div`
@@ -32,6 +33,7 @@ function BookingDetail() {
   };
 
   const { id: bookingId, status } = booking || {};
+  if (!booking) return <Empty resource="booking" />;
   if (isLoading) return <Spinner />;
   return (
     <>

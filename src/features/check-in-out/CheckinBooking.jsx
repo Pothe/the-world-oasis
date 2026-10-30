@@ -1,20 +1,20 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMoveBack } from "../../hooks/useMoveBack";
 import Button from "../../ui/Button";
 import ButtonGroup from "../../ui/ButtonGroup";
 import ButtonText from "../../ui/ButtonText";
+import Checkbox from "../../ui/Checkbox";
 import Heading from "../../ui/Heading";
 import Row from "../../ui/Row";
+import Spinner from "../../ui/Spinner";
+import { formatCurrency } from "../../utils/helpers";
 import BookingDataBox from "../bookings/BookingDataBox";
 import useBooking from "../bookings/useBooking";
-import Spinner from "../../ui/Spinner";
-import { useEffect, useState } from "react";
-import Checkbox from "../../ui/Checkbox";
-import { formatCurrency } from "../../utils/helpers";
 
-import { useChecking } from "./useChecking";
 import Box from "../../ui/Box";
 import { useSetttings } from "../settings/useSetttings";
+import { useChecking } from "./useChecking";
 
 function CheckinBooking() {
   const { bookingId } = useParams();

@@ -3,14 +3,14 @@ import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
-import { useLogin } from "./useLogin";
 import Spinner from "../../ui/Spinner";
 import SpinnerMini from "../../ui/SpinnerMini";
+import { useLogin } from "./useLogin";
 
 function LoginForm() {
-  const { apiAuth, loginLoading } = useLogin();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { apiAuth, loginLoading } = useLogin();
 
   function handleSubmit(e) {
     e.preventDefault();

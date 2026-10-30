@@ -1,15 +1,15 @@
-import Button from 'ui/Button';
-import { useCheckout } from './useCheckout';
+import Button from "../../ui/Button";
+import useCheckout from "../bookings/useCheckout";
 
 function CheckoutButton({ bookingId }) {
-  const { isLoading, mutate: checkout } = useCheckout();
+  const { checkout, checkLoading } = useCheckout();
 
   return (
     <Button
-      variation='primary'
-      size='small'
+      variation="primary"
+      size="small"
       onClick={() => checkout(bookingId)}
-      disabled={isLoading}
+      disabled={checkLoading}
     >
       Check out
     </Button>
